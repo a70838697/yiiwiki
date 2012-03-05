@@ -10,57 +10,73 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'title'); ?>
-		<?php echo $form->textField($model,'title',array('size'=>60,'maxlength'=>255)); ?>
-		<?php echo $form->error($model,'title'); ?>
-	</div>
-
-	<div class="row">
 		<?php echo $form->labelEx($model,'content'); ?>
-		<?php echo $form->textArea($model,'content',array('rows'=>6, 'cols'=>50)); ?>
+		The content uses an extended wiki format, please refer to <a href="http://www.simplewiki.org/" target="_blank">http://www.simplewiki.org/</a>
+		<?php echo $form->textArea($model,'content',array('rows'=>12, 'cols'=>80)); ?>
 		<?php echo $form->error($model,'content'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'access'); ?>
-		<?php echo $form->textField($model,'access'); ?>
-		<?php echo $form->error($model,'access'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'user_id'); ?>
-		<?php echo $form->textField($model,'user_id'); ?>
-		<?php echo $form->error($model,'user_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'ip'); ?>
-		<?php echo $form->textField($model,'ip',array('size'=>11,'maxlength'=>11)); ?>
-		<?php echo $form->error($model,'ip'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'revision'); ?>
-		<?php echo $form->textField($model,'revision'); ?>
-		<?php echo $form->error($model,'revision'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'create_time'); ?>
-		<?php echo $form->textField($model,'create_time'); ?>
-		<?php echo $form->error($model,'create_time'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'update_time'); ?>
-		<?php echo $form->textField($model,'update_time'); ?>
-		<?php echo $form->error($model,'update_time'); ?>
 	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
 
-<?php $this->endWidget(); ?>
+<?php echo 
+CHtml::script(
+'
+jQuery.fn.extend({
+insertAtCaret: function(myValue){
+  return this.each(function(i) {
+    if (document.selection) {
+      this.focus();
+      sel = document.selection.createRange();
+      sel.text = myValue;
+      this.focus();
+    }
+    else if (this.selectionStart || this.selectionStart == \'0\') {
+      var startPos = this.selectionStart;
+      var endPos = this.selectionEnd;
+      var scrollTop = this.scrollTop;
+      this.value = this.value.substring(0, startPos)+myValue+this.value.substring(endPos,this.value.length);
+      this.focus();
+      this.selectionStart = startPos + myValue.length;
+      this.selectionEnd = startPos + myValue.length;
+      this.scrollTop = scrollTop;
+    } else {
+      this.value += myValue;
+      this.focus();
+    }
+  })
+}
+});
 
+function insertFile(fileName,responseJSON)
+{
+	if(responseJSON.ext=="jpg"||responseJSON.ext=="jpeg"||responseJSON.ext=="png"||responseJSON.ext=="gif")
+		$("#Entry_content").insertAtCaret(\'\{\{Attachment:\'+responseJSON.fileid+\'|\'+fileName+\'}}\');
+	else
+		$("#Entry_content").insertAtCaret(\'[[Attachment:\'+responseJSON.fileid+\'|\'+fileName+\']]\');
+}
+'
+);
+?>
+<?php $this->endWidget(); ?>
+<? $this->widget('ext.EAjaxUpload.EAjaxUpload',
+array(
+        'id'=>'uploadFile',
+        'config'=>array(
+               'action'=>UCHtml::theUrl(array('upload/create', 'type'=>'wiki')),
+               'allowedExtensions'=>array("jpg","jpeg","png","gif","txt","rar","zip","ppt","chm","pdf","doc","7z"),//array("jpg","jpeg","gif","exe","mov" and etc...
+               'sizeLimit'=>20*1024*1024,// maximum file size in bytes
+               'minSizeLimit'=>10,// minimum file size in bytes
+               'onComplete'=>'js:function(id, fileName, responseJSON){ if (typeof(responseJSON.success)!="undefined" && responseJSON.success){insertFile(fileName,responseJSON);}}',
+               //'messages'=>array(
+               //                  'typeError'=>"{file} has invalid extension. Only {extensions} are allowed.",
+               //                  'sizeError'=>"{file} is too large, maximum file size is {sizeLimit}.",
+               //                  'minSizeError'=>"{file} is too small, minimum file size is {minSizeLimit}.",
+               //                  'emptyError'=>"{file} is empty, please select files again without it.",
+               //                  'onLeave'=>"The files are being uploaded, if you leave now the upload will be cancelled."
+               //                 ),
+               //'showMessage'=>"js:function(message){ alert(message); }"
+              )
+)); ?>
 </div><!-- form -->

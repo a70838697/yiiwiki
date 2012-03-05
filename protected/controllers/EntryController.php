@@ -31,7 +31,7 @@ class EntryController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array(/*'create',*/'update'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -50,9 +50,13 @@ class EntryController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
-		));
+		$model=Entry::model()->findByAttributes(array('title'=>$id));
+		if($model==null)
+			$this->redirect(array('entry/update/'.$id));
+		else
+			$this->render('view',array(
+				'model'=>$model,
+			));
 	}
 
 	/**
@@ -83,24 +87,59 @@ class EntryController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
+	/**
+	 * Updates a particular model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * @param integer $id the ID of the model to be updated
+	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
 
+		$model=Entry::model()->findByAttributes(array('title'=>$id));
+		if($model==null)
+		{
+			$model=new Entry;
+			$model->ip=UCApp::getIpAsInt();
+			$model->title=$id;
+		}
+		
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Entry']))
 		{
-			$model->attributes=$_POST['Entry'];
+			$needsave=true;
+			$revision=null;
+			if(!($model->isNewRecord))
+			{
+				if($model->content!=$_POST['Entry']['content'])
+				{
+					$revision=new EntryRevision;
+					$revision->attributes=$model->attributes;
+					$revision->entry_id=$model->id;
+					//error not catched
+					$revision->save();
+					
+					$model->revision=$model->revision+1;
+					$model->content=$_POST['Entry']['content'];
+				}
+				else $needsave=false;
+			}else {
+				$model->attributes=$_POST['Entry'];
+			}
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view','id'=>$model->title));
+			else 
+			{
+				if($revision)$revision->delete();
+			}
 		}
 
 		$this->render('update',array(
 			'model'=>$model,
 		));
 	}
+	
 
 	/**
 	 * Deletes a particular model.

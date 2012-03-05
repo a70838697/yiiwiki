@@ -15,8 +15,8 @@
  * @property integer $entry_id
  *
  * The followings are the available model relations:
- * @property Users $user
  * @property Entries $entry
+ * @property Users $user
  */
 class EntryRevision extends CActiveRecord
 {
@@ -63,8 +63,8 @@ class EntryRevision extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
-			'entry' => array(self::BELONGS_TO, 'Entries', 'entry_id'),
+			'entry' => array(self::BELONGS_TO, 'Entry', 'entry_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 

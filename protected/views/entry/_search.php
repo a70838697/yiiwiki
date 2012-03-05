@@ -32,7 +32,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'ip'); ?>
-		<?php echo $form->textField($model,'ip',array('size'=>11,'maxlength'=>11)); ?>
+		<?php echo $form->textField($model,'ip',array('size'=>15,'maxlength'=>15)); ?>
 	</div>
 
 	<div class="row">
@@ -48,6 +48,11 @@
 	<div class="row">
 		<?php echo $form->label($model,'update_time'); ?>
 		<?php echo $form->textField($model,'update_time'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->label($model,'accessed_time'); ?>
+		<?php echo $form->textField($model,'accessed_time'); ?>
 	</div>
 
 	<div class="row buttons">
