@@ -11,18 +11,18 @@
  * @property integer $access
  * @property integer $create_time
  * @property integer $user_id
- * @property string $ip
+ * @property integer $ip
  * @property integer $revision
  *
  * The followings are the available model relations:
  * @property Users $user
  */
-class Uploads extends CActiveRecord
+class Upload extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return Uploads the static model class
+	 * @return Upload the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -45,16 +45,39 @@ class Uploads extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('filename, filesize, location, access, user_id, ip', 'required'),
-			array('filesize, access, create_time, user_id, revision', 'numerical', 'integerOnly'=>true),
+			array('filename, filesize, location, access', 'required'),
+			array('filesize, access, revision', 'numerical', 'integerOnly'=>true),
 			array('filename, location', 'length', 'max'=>255),
-			array('ip', 'length', 'max'=>11),
+			array('create_time','default',
+				'value'=>new CDbExpression('UNIX_TIMESTAMP()'),
+				'setOnEmpty'=>false,'on'=>'insert'),
+			array('create_time','default',
+				'value'=>new CDbExpression('UNIX_TIMESTAMP()'),
+				'setOnEmpty'=>false,'on'=>'update'),
+			//array('ip', 'length', 'max'=>15),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, filename, filesize, location, access, create_time, user_id, ip, revision', 'safe', 'on'=>'search'),
 		);
 	}
-
+	/**
+	 * set initial value
+	 * @return true or false.
+	 */
+	protected function beforeSave()
+	{
+		if(parent::beforeSave())
+		{
+			if($this->isNewRecord)
+			{
+				$this->user_id=Yii::app()->user->id;
+				$this->ip=UCApp::getIpAsInt();
+			}
+			return true;
+		}
+		else
+			return false;
+	}	
 	/**
 	 * @return array relational rules.
 	 */
@@ -63,7 +86,7 @@ class Uploads extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
