@@ -83,7 +83,7 @@ class UploadController extends Controller
         {
         	if($type=="wiki")
         	{
-        		$folder.="wiki/";        		
+        		$folder.="wiki/1/";        		
         		$filefieldname="qqfile";
         	}
         	if($type=="report"){
