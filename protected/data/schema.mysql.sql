@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 05, 2012 at 04:51 AM
+-- Generation Time: Mar 06, 2012 at 11:54 AM
 -- Server version: 5.5.16
 -- PHP Version: 5.3.8
 
@@ -19,6 +19,77 @@ SET time_zone = "+00:00";
 --
 -- Database: `csp_wiki`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `authassignment`
+--
+
+CREATE TABLE IF NOT EXISTS `authassignment` (
+  `itemname` varchar(64) NOT NULL,
+  `userid` varchar(64) NOT NULL,
+  `bizrule` text,
+  `data` text,
+  PRIMARY KEY (`itemname`,`userid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `authassignment`
+--
+
+INSERT INTO `authassignment` (`itemname`, `userid`, `bizrule`, `data`) VALUES
+('Admin', '1', NULL, 'N;');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `authitem`
+--
+
+CREATE TABLE IF NOT EXISTS `authitem` (
+  `name` varchar(64) NOT NULL,
+  `type` int(11) NOT NULL,
+  `description` text,
+  `bizrule` text,
+  `data` text,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `authitem`
+--
+
+INSERT INTO `authitem` (`name`, `type`, `description`, `bizrule`, `data`) VALUES
+('Admin', 2, NULL, NULL, 'N;'),
+('Authenticated', 2, NULL, NULL, 'N;'),
+('Guest', 2, NULL, NULL, 'N;');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `authitemchild`
+--
+
+CREATE TABLE IF NOT EXISTS `authitemchild` (
+  `parent` varchar(64) NOT NULL,
+  `child` varchar(64) NOT NULL,
+  PRIMARY KEY (`parent`,`child`),
+  KEY `child` (`child`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rights`
+--
+
+CREATE TABLE IF NOT EXISTS `rights` (
+  `itemname` varchar(64) NOT NULL,
+  `type` int(11) NOT NULL,
+  `weight` int(11) NOT NULL,
+  PRIMARY KEY (`itemname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -156,7 +227,14 @@ CREATE TABLE IF NOT EXISTS `tbl_uploads` (
   `revision` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `tbl_uploads`
+--
+
+INSERT INTO `tbl_uploads` (`id`, `filename`, `filesize`, `location`, `access`, `create_time`, `user_id`, `ip`, `revision`) VALUES
+(4, 'csp_wiki_table_sql.txt', 3474, 'upload/wiki/1/3344835983f1af5d6a7bb51a0ecf52d2.txt', 0, 1330932428, 1, 02130706433, 1);
 
 -- --------------------------------------------------------
 
@@ -184,12 +262,31 @@ CREATE TABLE IF NOT EXISTS `tbl_users` (
 --
 
 INSERT INTO `tbl_users` (`id`, `username`, `password`, `email`, `activkey`, `superuser`, `status`, `create_at`, `lastvisit_at`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'webmaster@example.com', 'dcfd1bb010216eb03e19abe78b858d5a', 1, 1, '2012-03-05 02:47:13', '0000-00-00 00:00:00'),
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'webmaster@example.com', 'dcfd1bb010216eb03e19abe78b858d5a', 1, 1, '2012-03-05 02:47:13', '2012-03-06 00:36:57'),
 (2, 'demo', 'fe01ce2a7fbac8fafaed7c982a04e229', 'demo@example.com', '214b7ca06cbd07a461b5218cb63e25fe', 0, 1, '2012-03-05 02:47:13', '0000-00-00 00:00:00');
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `authassignment`
+--
+ALTER TABLE `authassignment`
+  ADD CONSTRAINT `authassignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `authitemchild`
+--
+ALTER TABLE `authitemchild`
+  ADD CONSTRAINT `authitemchild_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `authitemchild_ibfk_2` FOREIGN KEY (`child`) REFERENCES `authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `rights`
+--
+ALTER TABLE `rights`
+  ADD CONSTRAINT `rights_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `authitem` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `tbl_entries`
@@ -219,4 +316,3 @@ ALTER TABLE `tbl_uploads`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-

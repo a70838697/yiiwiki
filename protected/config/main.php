@@ -17,7 +17,9 @@ return array(
 		'application.models.*',
 		'application.components.*',
 		'application.modules.user.models.*',
-		'application.modules.user.components.*',		
+		'application.modules.user.components.*',
+		'application.modules.rights.*',
+		'application.modules.rights.components.*',
 	),
 
 	'modules'=>array(
@@ -41,7 +43,25 @@ return array(
 			'loginUrl' => array('/user/login'),                  # login form path
 			'returnUrl' => array('/user/profile'),               # page after login
 			'returnLogoutUrl' => array('/user/login'),           # page after logout
-		),			
+		),
+		'rights'=>array(
+			'superuserName'=>'Admin', // Name of the role with super user privileges.
+			'authenticatedName'=>'Authenticated', // Name of the authenticated user role.
+			'userIdColumn'=>'id', // Name of the user id column in the database.
+			'userNameColumn'=>'username', // Name of the user name column in the database.
+			'enableBizRule'=>true, // Whether to enable authorization item business rules.
+			'enableBizRuleData'=>false, // Whether to enable data for business rules.
+			'displayDescription'=>true, // Whether to use item description instead of name.
+			'flashSuccessKey'=>'RightsSuccess', // Key to use for setting success flash messages.
+			'flashErrorKey'=>'RightsError', // Key to use for setting error flash messages.
+			'install'=>true, // Whether to install rights.
+			'baseUrl'=>'/rights', // Base URL for Rights. Change if module is nested.
+			'layout'=>'rights.views.layouts.main', // Layout to use for displaying Rights.
+			'appLayout'=>'application.views.layouts.main', // Application layout.
+			'cssFile'=>'rights.css', // Style sheet file to use for Rights.
+			'install'=>false, // Whether to enable installer.
+			'debug'=>false, // Whether to enable debug mode.
+		),
 	),
 
 	// application components
@@ -112,9 +132,12 @@ return array(
 		),
 		'user'=>array(
 			// enable cookie-based authentication
-			'class' => 'WebUser',
+			'class' => 'RWebUser',
 			'allowAutoLogin'=>true,
 			'loginUrl' => array('/user/login'),
+		),
+		'authManager'=>array(
+			'class'=>'RDbAuthManager', // Provides support authorization item sorting.
 		),			
 	),
 
