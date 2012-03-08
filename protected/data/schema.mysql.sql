@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 06, 2012 at 11:54 AM
+-- Generation Time: Mar 08, 2012 at 02:17 PM
 -- Server version: 5.5.16
 -- PHP Version: 5.3.8
 
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `tbl_entries` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
 
 -- --------------------------------------------------------
 
@@ -227,14 +227,7 @@ CREATE TABLE IF NOT EXISTS `tbl_uploads` (
   `revision` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
-
---
--- Dumping data for table `tbl_uploads`
---
-
-INSERT INTO `tbl_uploads` (`id`, `filename`, `filesize`, `location`, `access`, `create_time`, `user_id`, `ip`, `revision`) VALUES
-(4, 'csp_wiki_table_sql.txt', 3474, 'upload/wiki/1/3344835983f1af5d6a7bb51a0ecf52d2.txt', 0, 1330932428, 1, 02130706433, 1);
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 -- --------------------------------------------------------
 
@@ -262,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `tbl_users` (
 --
 
 INSERT INTO `tbl_users` (`id`, `username`, `password`, `email`, `activkey`, `superuser`, `status`, `create_at`, `lastvisit_at`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'webmaster@example.com', 'dcfd1bb010216eb03e19abe78b858d5a', 1, 1, '2012-03-05 02:47:13', '2012-03-06 00:36:57'),
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'webmaster@example.com', 'dcfd1bb010216eb03e19abe78b858d5a', 1, 1, '2012-03-05 02:47:13', '2012-03-07 03:12:29'),
 (2, 'demo', 'fe01ce2a7fbac8fafaed7c982a04e229', 'demo@example.com', '214b7ca06cbd07a461b5218cb63e25fe', 0, 1, '2012-03-05 02:47:13', '0000-00-00 00:00:00');
 
 --
