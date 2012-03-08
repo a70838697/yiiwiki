@@ -138,6 +138,10 @@ return array(
 		),
 		'authManager'=>array(
 			'class'=>'RDbAuthManager', // Provides support authorization item sorting.
+			'itemTable' => 'authitem',//认证项表名称
+			'rightsTable' => 'rights',//认证项表名称
+			'itemChildTable' => 'authitemchild',//认证项父子关系
+			'assignmentTable' => 'authassignment',//认证项赋权关系			
 		),			
 	),
 
