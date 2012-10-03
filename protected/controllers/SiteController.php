@@ -18,9 +18,24 @@ class SiteController extends Controller
 			'page'=>array(
 				'class'=>'CViewAction',
 			),
+			'previewWiki',
 		);
 	}
 
+	/**
+	 * Get a preview for Markdown code
+	 *
+	 * The code to parse is supplied via the $_POST['data'] parameter
+	 */
+	public function actionPreviewWiki()
+	{
+		$this->layout="";
+		Yii::import('application.extensions.SimpleWiki.ImWiki');
+	
+		$wiki=new ImWiki($_POST['data']);
+		echo $wiki->get_html();
+	}
+	
 	/**
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.

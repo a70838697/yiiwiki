@@ -12,7 +12,17 @@
 	<div class="row">
 		<?php echo $form->labelEx($model,'content'); ?>
 		The content uses an extended wiki format, please refer to <a href="http://www.simplewiki.org/" target="_blank">http://www.simplewiki.org/</a>
-		<?php echo $form->textArea($model,'content',array('rows'=>12, 'cols'=>80)); ?>
+		<?php $this->widget('ext.jmarkitup.EMarkitupWidget', array(
+			'model' => $model,
+			'attribute' => 'content',
+			'settings'=>'wiki',
+			'theme'=>'yiiwiki',
+			'htmlOptions'=>array('cols'=>'120','rows'=>'20'),
+			'options'=>array(
+				'previewParserPath'=>Yii::app()->urlManager->createUrl('site/previewWiki')
+			)
+		))?>
+		<?php //echo $form->textArea($model,'content',array('rows'=>12, 'cols'=>80)); ?>
 		<?php echo $form->error($model,'content'); ?>
 	</div>
 
@@ -20,8 +30,8 @@
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
 
-<?php echo 
-CHtml::script(
+<?php
+echo CHtml::script(
 '
 jQuery.fn.extend({
 insertAtCaret: function(myValue){
